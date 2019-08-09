@@ -12,30 +12,37 @@
 
 #include "libft.h"
 
-ft_atoi_check(char *str)//spase simbols?
+int ft_atoi_check(const char *str)//spase simbols?
 {
 	int nbr;
 	int i;
 	int len;
+    int sign;
+    sign = 1;
 
-	i = ft_strlen(str);
-	while (--i > 0)
+    if (*str == '+')
+        str++;//else ? +-?? -+?? norm?
+    if (*str == '-')
+    {
+        str++;
+        sign = -1;
+    }
+    nbr = 0;
+    while (*str)
 	{
-		if (str[i] > '9' || str[i] < '0')
-			{
-				ft_putstr("Error");
-				exit(1);
-			}
-		else if (nbr <= nbr * 10 + str[i] - '0')
+		if (*str > '9' || *str < '0')
 		{
 			ft_putstr("Error");
 			exit(1);
 		}
-		else
-			nbr = nbr * 10 + (str[i] - '0');
-	}
-	if (str[i] == '-')//-
-	+
+        if ((nbr * 10 + sign * (*str - '0')  - (sign * (*str - '0'))) / 10 != nbr)
+		{
+			ft_putstr("Error");
+			exit(1);
+		}
+        nbr = nbr * 10 + sign * (*str - '0');
+        str++;
+    }
 }
 
 void do_push(long int *from, long int *to)
