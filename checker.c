@@ -77,6 +77,7 @@ void write_stack(t_stack *a, t_stack *b)
 	}
 	ft_putstr("\n");
 }
+
 void do_push(t_stack *from, t_stack *to)
 {
 	int i;
