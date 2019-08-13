@@ -194,7 +194,7 @@ void check_ascending_order(t_stack *stack)
 	}
 	ft_putstr("OK\n");
 }
-
+/*
 int main(int argc, char **argv)
 {
 	t_stack	*a;
@@ -256,3 +256,4 @@ int main(int argc, char **argv)
 	free_stack(b);
 	return (0);
 }
+*/

@@ -20,5 +20,6 @@ void do_rrotate(t_stack *stack);
 void do_push(t_stack *from, t_stack *to);
 void write_stack(t_stack *a, t_stack *b);
 void free_stack(t_stack *stack);
+void write_stack(t_stack *a, t_stack *b);
 
 #endif
