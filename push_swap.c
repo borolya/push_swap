@@ -40,27 +40,61 @@ int	find_med(int *array, int size)//not index// mb faster
 	return (array[size / 2]);
 }
 
-void push_half_of_big(t_stack *from, t_stack *to, int size, int *tmp)
+void push_half_of_big(t_stack *from, t_stack *to, int size, int *tmp, int *array_location, int *k1, int *k2)
 {
 	int i;
 	int m_med;
-
+	int push_count;
 	//write(1, "big\n", 4);
 	ft_memcpy(tmp, from->array + from->size - size, size * 4);
 	i = 0;
 	m_med = find_med(tmp, size);
    // printf("med = %d\n", m_med);
  	i = 0;
+	push_count = 0;
 	while (i < size)
 	{
-		write (1, "rrb\n", 4);
-		do_rrotate   (from);
+		
 		if (from->array[from->start] >= m_med)
 		{
 			write(1, "pa\n", 3);
 			do_push(from, to);
+			push_count++;
+			*k1++;
+			array_location[*k1] = 1;
+			*k2--;
+		}
+		else
+		{
+			write (1, "rb\n", 3);
+			do_rotate(from);
+			*k2--;
 		}
 		i++;
+	}
+
+	if (*k2 < 0)
+		*k2 = size - 1;
+	while (array_location[*k2] != 2)
+	{
+		*k2--;
+		if (*k2 < 0)
+			*k2 = size - 1;
+	}
+	while (push_count > 0)
+	{
+		write (1, "ra\n", 3);
+		do_rotate(to);
+		push_count--;
+		*k1--;
+	}
+	if (*k1 < 0)
+		*k1 = size - 1;
+	while (array_location[*k1] != 1)
+	{
+		*k1--;
+		if (*k1 < 0)
+			*k1 = size - 1;
 	}
 }
 
@@ -72,7 +106,7 @@ void push_half_of_small(t_stack *from, t_stack *to, int size, int *tmp)
 	//write(1, "small\n", 6);
 	ft_memcpy(tmp, from->array + from->size - size, size * 4);
 	m_med = find_med(tmp, size);
-   // printf("med = %d\n", m_med);
+	//printf("med = %d\n", m_med);
 	i = 0;
 	while (i < size)
 	{
@@ -90,23 +124,33 @@ void push_half_of_small(t_stack *from, t_stack *to, int size, int *tmp)
 void sort(t_stack *a, t_stack *b)//begin for deg 2 and massiv  [1 , a_size]
 {
 	int size;
-	int l_mediana;
+	int l_med;
 	int iter;
 	int count_numb;
 	int *tmp;
 	int i;
-
+	int *array_location;
+	int k1;
+	int k2;
+	int count_push;
+   
 	size = a->size;
+	array_location = ft_memalloc(sizeof(int) * size);
 	count_numb = size;
-	l_mediana = size / 2;
-	i = a->start;
+
 	tmp = ft_memalloc(sizeof(int) * a->size);
+	ft_memcpy(tmp, a->array, a->size * 4);
+	l_med = find_med(tmp,size);
+	
+	i = a->start;
+	count_push = 0;
 	while (i < size)
 	{
-		if (a->array[a->start] <= l_mediana) 
+		if (a->array[a->start] <= l_med) 
 		{
 			write(1, "pb\n", 3);
 			do_push(a, b);
+			count_push++;
 		}
 		else
 		{
@@ -115,8 +159,29 @@ void sort(t_stack *a, t_stack *b)//begin for deg 2 and massiv  [1 , a_size]
 		}
 		i++;
 	}
-	size = size / 2;
-	//write_stack(a, b);
+	i = -1;
+	while (++i < size - count_push)
+		array_location[i] = 1;
+	while (i < size)
+	{
+		array_location[i] = 2;
+		i++;
+	}
+	//size = size / 2;
+	k1 = count_push - size - 1;
+	k2 = size - 1;
+
+	if (k2 > k1)
+	{
+		push_half_of_big(b, a, k2 - k1, tmp, array_location, &k1, &k2);
+
+	}
+
+
+
+
+
+
 	while (size > 2)
 	{
 		iter = (count_numb / 2) / size;
