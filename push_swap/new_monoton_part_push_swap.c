@@ -69,13 +69,18 @@ int take_monoton(t_stack *stack, int *mon_section, int size)
 void merge_increasing_and_increasing(t_stack *a, t_stack *b, int *a_mon, int *b_mon, int size)
 {
 	int i_mon;
-	int size_mon;
+	//int size_mon;
+	int b_size;
+	int a_size;
 
-	take_monoton(a, a_mon, size);
-	size_mon = take_monoton(b, b_mon, size);
+	a_size = take_monoton(a, a_mon, size);
+	b_size = take_monoton(b, b_mon, size);
 	i_mon = 0;
 	
-	while (i_mon < size_mon)
+	write_array(a_mon);
+	write_array(b_mon);
+	/*
+	while (i_mon < a_size && i_mon < b_size)
 	{
 		while(a_mon[i_mon] != 0 || b_mon[i_mon] != 0)
 		{
@@ -92,6 +97,9 @@ void merge_increasing_and_increasing(t_stack *a, t_stack *b, int *a_mon, int *b_
 				do_rotate(a);
 				a_mon[i_mon]--;
 			}
+			write_stack(a, b);
+			write_array(a_mon);
+			write_array(b_mon);
 		}
 		i_mon++;
 	}
@@ -101,6 +109,7 @@ void merge_increasing_and_increasing(t_stack *a, t_stack *b, int *a_mon, int *b_
 		do_rotate(a);
 		a_mon[i_mon]--;
 	}
+	*/
 }
 
 void merge_increasing_and_discresing(t_stack *a, t_stack *b, int *a_mon, int *b_mon, int size)
