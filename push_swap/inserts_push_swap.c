@@ -8,7 +8,6 @@ void	take_location(t_stack *stack, int *tmp)
 	int pr;
 	int i;
 	int j;
-	int save_j;
 
 	//pr = -2147483648;
 	now = stack->array[0];
@@ -24,21 +23,21 @@ void	take_location(t_stack *stack, int *tmp)
 	}
 	i = 1;
 	pr = now;
-	while (++i < stack->size)
+	while (i < stack->size)
 	{
 		j = 0;
-		save_j = 0;
-		now = stack->array[0];
+		while (stack->array[j] <= pr && j < stack->size)
+			j++;
+		now = stack->array[j];
 		while (j < stack->size)
 		{
-			if (stack->array[j] > pr && stack->array[j] < now)
+			if (stack->array[j] > pr && stack->array[j] <= now)
 			{
 				now = stack->array[j];
-				save_j = j;
+				tmp[j] = i;
 			}
 			j++;
 		}
-		tmp[save_j] = i;
 		pr = now;
 		i++;
 	}
@@ -240,6 +239,8 @@ void move_to_place(t_stack *a, t_stack *b, t_costelem cost)
 			cost.rrb--;
 		}
 	}
+	write(1, "pa\n", 3);
+	do_push(b, a);
 }
 
 void rotate_stack(t_stack *a)
@@ -251,7 +252,7 @@ void rotate_stack(t_stack *a)
 	i = 0;//a->start = 0;
 	while (a->array[i] != 0)
 		i++;
-	if (i < a->size - i)
+	if (i > a->size - i)
 	{
 		i = a->size - i;
 		rr_flag = 1;
@@ -262,7 +263,7 @@ void rotate_stack(t_stack *a)
 		{
 			write(1, "rra\n", 4);
 			do_rrotate(a);
-			i++;
+			i--;
 		}
 	}
 	else
@@ -271,32 +272,44 @@ void rotate_stack(t_stack *a)
 		{
 			write(1, "ra\n", 3);
 			do_rotate(a);
-			i++;
+			i--;
 		}
 	}
+}
+#include <stdio.h>
+void write_cost(t_costelem cost)
+{
+	printf("index %d\n", cost.index);
+	printf("cost %d\n", cost.cost);
+	printf("ra %d\n", cost.ra);
+	printf("rb %d\n", cost.rb);
+	printf("rra %d\n", cost.rra);
+	printf("rrb %d\n", cost.rrb);
+	printf("flag %d\n", cost.flag);
 }
 
 void	sort(t_stack *a, t_stack *b)
 {
 	int *tmp;
-	//t_costelem cost;
+	t_costelem cost;
 
 	if (check_ascending_order(a->array, a->size - a->start, a->start))
 		return ;
 	tmp = ft_memalloc(sizeof(int) * a->size);
-	take_location(a, tmp);
-	
-	write_stack(a, b);
-	/*
+	take_location(a, tmp);	
+//	write_stack(a, b);
 	if (a->size > 2)
 		stay_three_elem(a, b);
+//	write_stack(a, b);
 	while (a->start != 0)
 	{
 		cost = take_min_cost(a, b);
+	//	write_cost(cost);
 		move_to_place(a, b, cost);
+		//write_stack(a, b);
 	}
 	rotate_stack(a);
-*/
+
 }
 
 int		main(int argc, char **argv)
@@ -314,6 +327,6 @@ int		main(int argc, char **argv)
 	check_uniq(a);
 	create_stack(argc - 1, argc - 1, &b);
 	sort(a, b);
-	write_stack(a, b);
+	//write_stack(a, b);
 	return (0);
 }
